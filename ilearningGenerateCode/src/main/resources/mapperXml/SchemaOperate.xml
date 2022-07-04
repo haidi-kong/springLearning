@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ilearning.generate.mapper.SchemaOperate">
+
+    <!--
+        一般情况下，尽可能使用 Mapper 进行 CRUD 增删改查即可。
+        无法满足的场景，例如说多表关联查询，才使用 XML 编写 SQL。
+        代码生成器暂时只生成 Mapper XML 文件本身，更多推荐 MybatisX 快速开发插件来生成查询。
+        文档可见：https://www.iocoder.cn/MyBatis/x-plugins/
+     -->
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="tableMap" type="com.ilearning.generate.dataObject.SchemaTableDO">
+        <result column="table_schema" property="tableSchema" jdbcType="VARCHAR"/>
+        <result column="table_name" property="tableName" jdbcType="VARCHAR"/>
+        <result column="table_comment" property="tableComment" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="DATE"/>
+    </resultMap>
+
+    <select id="selectByTableSchema" resultMap="tableMap">
+        SELECT
+            table_schema,table_name,table_comment,create_time
+            FROM
+            information_schema.`TABLES`
+            WHERE
+            table_schema = (SELECT DATABASE())
+    </select>
+
+</mapper>

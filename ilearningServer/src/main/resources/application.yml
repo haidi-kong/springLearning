@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: ilearning-server
+
+  profiles:
+    active: dev
+
+  # Servlet 配置
+  servlet:
+    # 文件上传相关配置项
+    multipart:
+      max-file-size: 16MB # 单个文件大小
+      max-request-size: 32MB # 设置总上传的文件大小
+
+  # Jackson 配置项
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true # 设置 Date 的格式，使用时间戳
+      write-date-timestamps-as-nanoseconds: false # 设置不使用 nanoseconds 的格式。例如说 1611460870.401，而是直接 1611460870401
+      write-durations-as-timestamps: true # 设置 Duration 的格式，使用时间戳
+      fail-on-empty-beans: false # 允许序列化无属性的 Bean
+
+  # Cache 配置项
+  cache:
+    type: REDIS
+    redis:
+      time-to-live: 1h # 设置过期时间为 1 小时
+
+
+#################### 芋道相关配置 ####################
+ilearning:
+  info:
+    version: 1.0.0
+    base-package: com.ilearning
+  swagger:
+    enable: true
+    title: ilearning-swagger
+    description: 接口调试
+    version: ${ilearning.info.version}
+    base-package: ${ilearning.info.base-package}
+    author: ilearning
+
+
+# 日志文件配置
+logging:
+  file:
+    name: ${spring.application.name}.log # 日志文件名，全路径
+  level:
+    # 配置自己写的 MyBatis Mapper 打印日志
+    com.ilearning.pay.dal.mysql: debug

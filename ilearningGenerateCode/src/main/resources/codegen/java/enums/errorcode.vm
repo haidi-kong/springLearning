@@ -1,0 +1,8 @@
+// ========== ${table.classComment} TODO 补充编号 ==========
+package ${basePackage}.${table.moduleName}.enums;
+
+
+import ${ErrorCodeClassName};
+public interface ErrorCodeConstants {
+    ErrorCode ${simpleClassName_underlineCase.toUpperCase()}_NOT_EXISTS = new ErrorCode(1009000002, "${table.classComment}不存在");
+}
