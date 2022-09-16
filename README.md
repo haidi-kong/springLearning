@@ -9,7 +9,8 @@
 > 😜 给项目点点 Star 吧！
 
 学习分享内容
-* 1.spring/springboot.
+* ilearningGenerateCode 基于velocity，读取表结构快速生成springboot开发全套代码，支持自定义模板，代码生成路径，生成你想需要的任务内容。
+* spring事务，引入事务的方式，1.xml切面 2.配置类 3.注解 4.手动事务 理论知识可参考 [博客](https://blog.csdn.net/qq_17236715/article/details/125591467?spm=1001.2014.3001.5501)
 
 
 
@@ -21,7 +22,7 @@
 | `ilearningCommon`    | Spring Boot 公用模块        | spring常用组件的配置和引入和业务层隔离     |
 | `ilearningDependencies`  | Spring Boot 依赖模块       | 统一管理maven依赖包  |
 | `ilearningGenerateCode` | 基于数据库表快速生成能一键启动的模块业务代码，springboot常见的分层结构 |
-| `ilearningServer` | 启动模块 | 搭建的业务模块 |
+| `ilearningServer` | 启动模块 | 搭建的业务模块，很多快速业务搭建验证会在这里进行 | 
 
 
 ### 后端

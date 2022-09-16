@@ -2,62 +2,73 @@ server:
   port: 48080
 
 --- #################### 数据库相关配置 ####################
-
-
 spring:
-  # 数据源配置项
-  autoconfigure:
-    exclude:
-      - com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure # 排除 Druid 的自动配置，使用 dynamic-datasource-spring-boot-starter 配置多数据源
-  datasource:
-    druid: # Druid 【监控】相关的全局配置
-      web-stat-filter:
-        enabled: true
-      stat-view-servlet:
-        enabled: true
-        allow: # 设置白名单，不填则允许所有访问
-        url-pattern: /druid/*
-        login-username: # 控制台管理用户名和密码
-        login-password:
-      filter:
-        stat:
-          enabled: true
-          log-slow-sql: true # 慢 SQL 记录
-          slow-sql-millis: 100
-          merge-sql: true
-        wall:
-          config:
-            multi-statement-allow: true
-    dynamic: # 多数据源配置
-      druid: # Druid 【连接池】相关的全局配置
-        initial-size: 5 # 初始连接数
-        min-idle: 10 # 最小连接池数量
-        max-active: 20 # 最大连接池数量
-        max-wait: 600000 # 配置获取连接等待超时的时间，单位：毫秒
-        time-between-eviction-runs-millis: 60000 # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位：毫秒
-        min-evictable-idle-time-millis: 300000 # 配置一个连接在池中最小生存的时间，单位：毫秒
-        max-evictable-idle-time-millis: 900000 # 配置一个连接在池中最大生存的时间，单位：毫秒
-        validation-query: SELECT 1 FROM DUAL # 配置检测连接是否有效
-        test-while-idle: true
-        test-on-borrow: false
-        test-on-return: false
-      primary: master
-      datasource:
-        master:
-          name: ilearning
-          url: jdbc:mysql://42.192.183.193:3306/${spring.datasource.dynamic.datasource.master.name}?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=CTT
-          driver-class-name: com.mysql.jdbc.Driver
-          username: root
-          password: lzj2515628
-        slave: # 模拟从库，可根据自己需要修改 # 模拟从库，可根据自己需要修改
-          name: ilearning
-          url: jdbc:mysql://42.192.183.193:3306/${spring.datasource.dynamic.datasource.slave.name}?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=CTT
-          driver-class-name: com.mysql.jdbc.Driver
-          username: root
-          password: lzj2515628
+  main:
+    allow-bean-definition-overriding: true
+  shardingsphere:
+    props:
+      sql:
+        show: true
+    datasource:
+      demo0:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://42.192.183.193:3306/demo0?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=CTT
+        username: root
+        password: lzj2515628
+        type: com.alibaba.druid.pool.DruidDataSource
+        maxActive: 20
+        min-idle: 5
+        connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+        filters: stat,wall,log4j2
+      demo1:
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://42.192.183.193:3306/demo1?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=CTT
+        username: root
+        password: lzj2515628
+        type: com.alibaba.druid.pool.DruidDataSource
+        maxActive: 20
+        min-idle: 5
+        connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+        filters: stat,wall,log4j2
+      names: demo0,demo1
+    sharding:
+      binding-tables: pay_parent,pay_parent_item
+      broadcast-tables: t_address
+      default-database-strategy:
+        inline:
+          algorithm-expression: demo$->{user_id % 2}
+          sharding-column: user_id
+      tables:
+        pay_parent:
+          actual-data-nodes: demo$->{0..1}.pay_parent_$->{0..1}
+          key-generator:
+            column: id
+            props:
+              worker:
+                id: 123
+            type: SNOWFLAKE
+          table-strategy:
+            inline:
+              algorithm-expression: pay_parent_$->{id % 2}
+              sharding-column: id
+        pay_parent_item:
+          actual-data-nodes: demo$->{0..1}.pay_parent_item_$->{0..1}
+          key-generator:
+            column: id
+            props:
+              worker:
+                id: 123
+            type: SNOWFLAKE
+          table-strategy:
+            inline:
+              algorithm-expression: pay_parent_item_$->{order_id % 2}
+              sharding-column: order_id
 
   # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
   redis:
     host: 42.192.183.193 # 地址
     port: 26379 # 端口
     database: 1 # 数据库索引
+props:
+  sql:
+    show=true:
