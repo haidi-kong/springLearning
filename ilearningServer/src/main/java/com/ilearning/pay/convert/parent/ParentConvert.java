@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.ilearning.common.pojo.PageResult;
 
+import com.ilearning.pay.dal.dataobject.parent.ParentDO2;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import com.ilearning.pay.controller.admin.parent.vo.*;
@@ -28,6 +29,9 @@ public interface ParentConvert {
     List<ParentRespVO> convertList(List<ParentDO> list);
 
     PageResult<ParentRespVO> convertPage(PageResult<ParentDO> page);
+
+
+    PageResult<ParentRespVO> convertPage2(PageResult<ParentDO2> page);
 
     List<ParentExcelVO> convertList02(List<ParentDO> list);
 

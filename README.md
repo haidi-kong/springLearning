@@ -9,9 +9,9 @@
 > 😜 给项目点点 Star 吧！
 
 学习分享内容
-* ilearningGenerateCode 基于velocity，读取表结构快速生成springboot开发全套代码，支持自定义模板，代码生成路径，生成你想需要的任务内容。
+* ilearningGenerateCode 基于velocity，读取表结构快速生成springboot开发全套代码，支持自定义模板，代码生成路径，快速开发
 * spring事务，引入事务的方式，1.xml切面 2.配置类 3.注解 4.手动事务 理论知识可参考 [博客](https://blog.csdn.net/qq_17236715/article/details/125591467?spm=1001.2014.3001.5501)
-
+* shardingSphere 分库分表实践
 
 
 事务传播和Mybatis事务实现。
@@ -41,3 +41,4 @@
 | [Jackson](https://github.com/FasterXML/jackson)                                             | JSON 工具库         | 2.12.6   |                                                                |
 | [MapStruct](https://mapstruct.org/)                                                         | Java Bean 转换     | 1.4.1    | [文档](http://www.iocoder.cn/Spring-Boot/MapStruct/?yudao)       |
 | [Lombok](https://projectlombok.org/)                                                        | 消除冗长的 Java 代码    | 1.16.14  | [文档](http://www.iocoder.cn/Spring-Boot/Lombok/?yudao)          |
+| [org.apache.shardingsphere](https://github.com/apache/shardingsphere)                       | 分库分表    | 4.0.0-RC1  | [文档](https://github.com/apache/shardingsphere)          |

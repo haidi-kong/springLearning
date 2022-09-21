@@ -8,5 +8,28 @@
         代码生成器暂时只生成 Mapper XML 文件本身，更多推荐 MybatisX 快速开发插件来生成查询。
         文档可见：https://www.iocoder.cn/MyBatis/x-plugins/
      -->
+    <resultMap id="BaseResultMap" type="com.ilearning.pay.dal.dataobject.parent.ParentDO2" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <collection property="parentItemDOList" javaType="java.util.List" ofType="com.ilearning.pay.dal.dataobject.parentItem.ParentItemDO">
+            <id column="item_id" property="id" jdbcType="BIGINT" />
+            <result column="order_id" property="orderId" jdbcType="BIGINT" />
+            <result column="item_status" property="status" jdbcType="VARCHAR" />
+            <result column="item_user_id" property="userId" jdbcType="INTEGER" />
+        </collection>
+    </resultMap>
+
+    <select id="selectPageDetail" resultMap="BaseResultMap">
+        select
+        l.id, l.user_id, l.status,
+         r.id as item_id, r.order_id, r.status as item_status, r.user_id as item_user_id
+        from pay_parent as l
+        left join pay_parent_item r on l.id = r.order_id
+        where 1= 1
+        <if test="req.userId != null and req.userId != ''" >
+            and l.user_id = #{req.userId}
+        </if>
+    </select>
 
 </mapper>

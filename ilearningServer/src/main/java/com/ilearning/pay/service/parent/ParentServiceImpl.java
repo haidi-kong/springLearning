@@ -1,5 +1,11 @@
 package com.ilearning.pay.service.parent;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ilearning.common.mybatis.core.util.MyBatisUtils;
+import com.ilearning.common.pojo.PageParam;
+import com.ilearning.pay.dal.dataobject.parent.ParentDO2;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
@@ -75,6 +81,15 @@ public class ParentServiceImpl implements ParentService {
     @Override
     public PageResult<ParentDO> getParentPage(ParentPageReqVO pageReqVO) {
         return parentMapper.selectPage(pageReqVO);
+    }
+
+    /**
+     * 根据用户id来查询该用户的订单详情
+     */
+    @Override
+    public PageResult<ParentDO2> getParentPageDetail(ParentPageReqVO pageReqVO) {
+        Page<ParentDO2> pageQuery = new Page<>(pageReqVO.getPageNo(), pageReqVO.getPageSize());
+        return new PageResult<>(parentMapper.selectPageDetail(pageQuery, pageReqVO), pageQuery.getTotal());
     }
 
     @Override

@@ -5,6 +5,7 @@ import javax.validation.*;
 import com.ilearning.pay.controller.admin.parent.vo.*;
 import com.ilearning.pay.dal.dataobject.parent.ParentDO;
 import com.ilearning.common.pojo.PageResult;
+import com.ilearning.pay.dal.dataobject.parent.ParentDO2;
 
 /**
  *  Service 接口
@@ -58,6 +59,9 @@ public interface ParentService {
      * @return 分页
      */
     PageResult<ParentDO> getParentPage(ParentPageReqVO pageReqVO);
+
+
+    PageResult<ParentDO2> getParentPageDetail(ParentPageReqVO pageReqVO);
 
     /**
      * 获得列表, 用于 Excel 导出

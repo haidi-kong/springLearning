@@ -1,14 +1,23 @@
 package com.ilearning.pay.httpUtil;
  
 import com.alibaba.fastjson.JSONObject;
+import org.apache.http.HeaderElement;
+import org.apache.http.HeaderElementIterator;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeaderElementIterator;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
  
 import java.io.IOException;
@@ -61,7 +70,31 @@ public class CloseableHttpClientUtil {
      */
     public static String doPost(String url, JSONObject json) {
         if (null == httpClient) {
-            httpClient = HttpClientBuilder.create().build();
+            ConnectionKeepAliveStrategy myStrategy = new ConnectionKeepAliveStrategy() {
+                @Override
+                public long getKeepAliveDuration(HttpResponse response, HttpContext context) {
+                    HeaderElementIterator it = new BasicHeaderElementIterator
+                            (response.headerIterator(HTTP.CONN_KEEP_ALIVE));
+                    while (it.hasNext()) {
+                        HeaderElement he = it.nextElement();
+                        String param = he.getName();
+                        String value = he.getValue();
+                        if (value != null && param.equalsIgnoreCase
+                                ("timeout")) {
+                            return Long.parseLong(value) * 1000;
+                        }
+                    }
+                    return 60 * 1000;//如果没有约定，则默认定义时长为60s
+                }
+            };
+            PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+            connectionManager.setMaxTotal(500);
+            connectionManager.setDefaultMaxPerRoute(200);//例如默认每路由最高50并发，具体依据业务来定
+            httpClient = HttpClients.custom()
+                    .setConnectionManager(connectionManager)
+                    .setKeepAliveStrategy(myStrategy)
+                    .setDefaultRequestConfig(RequestConfig.custom().setStaleConnectionCheckEnabled(true).build())
+                    .build();
         }
         HttpPost httpPost = new HttpPost(url);
         if (null != tokenString && tokenString.equals("")) {
@@ -74,7 +107,7 @@ public class CloseableHttpClientUtil {
             StringEntity se = new StringEntity(json.toString());
             se.setContentEncoding("UTF-8");
             //发送json数据需要设置contentType
-            se.setContentType("application/x-www-form-urlencoded");
+            se.setContentType("application/json");
             //设置请求参数
             httpPost.setEntity(se);
             HttpResponse response = httpClient.execute(httpPost);
@@ -86,13 +119,13 @@ public class CloseableHttpClientUtil {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (httpClient != null){
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+//            if (httpClient != null){
+//                try {
+//                    httpClient.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
         }
         return null;
     }

@@ -1,5 +1,6 @@
 package com.ilearning.pay.controller.admin.parent;
 
+import com.ilearning.pay.dal.dataobject.parent.ParentDO2;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
@@ -83,6 +84,14 @@ public class ParentController {
     public CommonResult<PageResult<ParentRespVO>> getParentPage(@Valid ParentPageReqVO pageVO) {
         PageResult<ParentDO> pageResult = parentService.getParentPage(pageVO);
         return success(ParentConvert.INSTANCE.convertPage(pageResult));
+    }
+
+    @GetMapping("/detailPage")
+    @ApiOperation("获得详情分页")
+
+    public CommonResult<PageResult<ParentRespVO>> getParentDetailPage(@Valid ParentPageReqVO pageVO) {
+        PageResult<ParentDO2> pageResult = parentService.getParentPageDetail(pageVO);
+        return success(ParentConvert.INSTANCE.convertPage2(pageResult));
     }
 
     @GetMapping("/export-excel")

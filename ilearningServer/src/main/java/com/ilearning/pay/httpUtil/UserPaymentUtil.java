@@ -11,30 +11,27 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class UserPaymentUtil {
 
 	private static void createOrder(int count) throws Exception {
-		SnowFlake snowFlake = new SnowFlake(1,1);
-		List<ParentDO> parentDOS = new ArrayList<>(count);
-		List<ParentItemDO> parentItemDOList = new ArrayList<>(count);
-		//生成用户
+		//生成订单
 		for(int i=0;i<count;i++) {
-			long parentId = snowFlake.nextId();
 			int userId = (int) (Math.random()*100);
 			ParentDO parentDO = new ParentDO();
 			ParentItemDO parentItemDO = new ParentItemDO();
-			parentDO.setId(parentId);
 			parentDO.setUserId(userId);
 			parentDO.setStatus("0");
 			String res =  CloseableHttpClientUtil.doPost("http://localhost:48080/pay/parent/create", (JSONObject) JSONObject.toJSON(parentDO));
-			long parentId = JSONObject.parseObject(res);
-			long parentItemId = snowFlake.nextId();
-			parentItemDO.setId(parentItemId);
+			JSONObject resJson = JSONObject.parseObject(res);
+			long parentId = Long.parseLong(resJson.getString("data"));
 			parentItemDO.setOrderId(parentId);
 			parentItemDO.setUserId(userId);
 			parentItemDO.setStatus("0");
-
+			String res2 =  CloseableHttpClientUtil.doPost("http://localhost:48080/pay/parent-item/create", (JSONObject) JSONObject.toJSON(parentItemDO));
+			long parentItemId = Long.parseLong(resJson.getString("data"));
 		}
 
 //		//插入数据库
@@ -85,6 +82,20 @@ public class UserPaymentUtil {
 
 
 	public static void main(String[] args)throws Exception {
-		createOrder(100);
+		ExecutorService executorService = Executors.newFixedThreadPool(100);
+		for (int i = 0 ; i < 100; i++) {
+			executorService.execute(() -> {
+				try {
+					createOrder(10000);
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+				}
+			});
+		}
+
+
+		//createOrder(1000);
+
 	}
 }
