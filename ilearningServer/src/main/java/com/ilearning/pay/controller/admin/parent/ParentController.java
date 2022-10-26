@@ -69,6 +69,14 @@ public class ParentController {
         return success(ParentConvert.INSTANCE.convert(parent));
     }
 
+    @PostMapping("/get2")
+    @ApiOperation("根据user_id范围获得")
+    @ApiImplicitParam(name = "id", value = "编号", required = true, example = "1024", dataTypeClass = Long.class)
+    public CommonResult<PageResult<ParentRespVO>> getParentBetween(@RequestParam("id") Long id, @RequestParam("id2") Long id2) {
+        List<ParentDO2> parent = parentService.getParent2(id, id2);
+        return success(ParentConvert.INSTANCE.convertPage2(new PageResult<>(parent, (long)parent.size())));
+    }
+
     @GetMapping("/list")
     @ApiOperation("获得列表")
     @ApiImplicitParam(name = "ids", value = "编号列表", required = true, example = "1024,2048", dataTypeClass = List.class)

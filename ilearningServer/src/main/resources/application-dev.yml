@@ -35,12 +35,16 @@ spring:
       binding-tables: pay_parent,pay_parent_item
       broadcast-tables: t_address
       default-database-strategy:
-        inline:
-          algorithm-expression: demo$->{user_id % 2}
+        ## 实际数据库分库路由键和路由算法
+        standard:
+          precise-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.DatabasePreciseShardingAlgorithm
+          range-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.DatabasePreciseRangeShardingAlgorithm
           sharding-column: user_id
       tables:
         pay_parent:
+          ## 实际数据库分库数量和分表数量
           actual-data-nodes: demo$->{0..1}.pay_parent_$->{0..1}
+          ## 表主键策略
           key-generator:
             column: id
             props:
@@ -48,9 +52,11 @@ spring:
                 id: 123
             type: SNOWFLAKE
           table-strategy:
-            inline:
-              algorithm-expression: pay_parent_$->{id % 2}
-              sharding-column: id
+            ## 实际数据库分表路由键和路由算法
+            standard:
+              precise-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyPreciseTableShardingAlgorithm
+              range-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyPreciseTableRangeShardingAlgorithm
+              sharding-column: user_id
         pay_parent_item:
           actual-data-nodes: demo$->{0..1}.pay_parent_item_$->{0..1}
           key-generator:
@@ -60,9 +66,10 @@ spring:
                 id: 123
             type: SNOWFLAKE
           table-strategy:
-            inline:
-              algorithm-expression: pay_parent_item_$->{order_id % 2}
-              sharding-column: order_id
+            standard:
+              precise-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyPreciseTableShardingAlgorithm
+              range-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyPreciseTableRangeShardingAlgorithm
+              sharding-column: user_id
 
   # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
   redis:
