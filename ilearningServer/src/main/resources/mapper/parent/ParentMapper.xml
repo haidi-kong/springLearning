@@ -30,6 +30,12 @@
         <if test="req.userId != null and req.userId != ''" >
             and l.user_id = #{req.userId}
         </if>
+        <if test="req.userId != null and req.userId != ''" >
+            and r.user_id = #{req.userId}
+        </if>
+        <if test="req.updateTime != null and req.updateTime != ''" >
+            and l.update_time > #{req.updateTime}
+        </if>
     </select>
 
     <select id="selectByRangeId" resultMap="BaseResultMap">

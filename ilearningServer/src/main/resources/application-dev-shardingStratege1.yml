@@ -53,12 +53,10 @@ spring:
             type: SNOWFLAKE
           table-strategy:
             ## 实际数据库分表路由键和路由算法
-            hint:
-              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyHintTableShardingAlgorithm
-          database-strategy:
-            ## 实际数据库分表路由键和路由算法
-            hint:
-              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyHintDatabaseShardingAlgorithm
+            complex:
+              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyComplexTableShardingAlgorithm
+              range-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyPreciseTableRangeShardingAlgorithm
+              sharding-columns: user_id,update_time
         pay_parent_item:
           actual-data-nodes: demo$->{0..1}.pay_parent_item_$->{0..1}
           key-generator:
@@ -68,12 +66,10 @@ spring:
                 id: 123
             type: SNOWFLAKE
           table-strategy:
-            hint:
-              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyHintTableShardingAlgorithm
-          database-strategy:
-            ## 实际数据库分表路由键和路由算法
-            hint:
-              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyHintDatabaseShardingAlgorithm
+            standard:
+              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyComplexTableShardingAlgorithm
+              sharding-columns: user_id,update_time
+
   # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
   redis:
     host: 42.192.183.193 # 地址

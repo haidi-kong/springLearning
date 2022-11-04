@@ -1,6 +1,7 @@
 package com.ilearning.pay.controller.admin.parent;
 
 import com.ilearning.pay.dal.dataobject.parent.ParentDO2;
+import org.apache.shardingsphere.api.hint.HintManager;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
@@ -98,7 +99,17 @@ public class ParentController {
     @ApiOperation("获得详情分页")
 
     public CommonResult<PageResult<ParentRespVO>> getParentDetailPage(@Valid ParentPageReqVO pageVO) {
+        // Hint分片策略必须要使用 HintManager工具类
+        HintManager hintManager = HintManager.getInstance();
+        hintManager.addDatabaseShardingValue("pay_parent", pageVO.getUserId());
+        hintManager.addTableShardingValue("pay_parent",pageVO.getUserId());
+        hintManager.addTableShardingValue("pay_parent_item",pageVO.getUserId());
+
+        //在读写分离数据库中，Hint 可以强制读主库（主从复制是存在一定延时，但在业务场景中，可能更需要保证数据的实时性）
+        //hintManager.setMasterRouteOnly();
+
         PageResult<ParentDO2> pageResult = parentService.getParentPageDetail(pageVO);
+        hintManager.close();
         return success(ParentConvert.INSTANCE.convertPage2(pageResult));
     }
 

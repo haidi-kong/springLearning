@@ -17,4 +17,7 @@ public class ParentPageReqVO extends PageParam {
     @ApiModelProperty(value = "")
     private Integer userId;
 
+    @ApiModelProperty(value = "")
+    private String updateTime;
+
 }
