@@ -13,10 +13,9 @@ public class MyHintTableShardingAlgorithm implements HintShardingAlgorithm<Compa
 
     @Override
     public Collection<String> doSharding(Collection<String> availableTargetNames, HintShardingValue<Comparable<?>> shardingValue) {
-        String key = shardingValue.getLogicTableName() + "_" + shardingValue.getValues().toArray()[0];
-        Integer curValue = (Integer) shardingValue.getValues().toArray()[0];
+        int curValue = Integer.parseInt((String) shardingValue.getValues().toArray()[0]);
         int databaseKey = curValue % 2;
-        return Arrays.asList(shardingValue.getLogicTableName() + "_" + + databaseKey);
+        return Collections.singletonList(shardingValue.getLogicTableName() + "_" + +databaseKey);
     }
 
 }

@@ -31,15 +31,10 @@ spring:
         connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
         filters: stat,wall,log4j2
       names: demo0,demo1
+      baseName: demo
     sharding:
       binding-tables: pay_parent,pay_parent_item
-      broadcast-tables: t_address
-      default-database-strategy:
-        ## 实际数据库分库路由键和路由算法
-        standard:
-          precise-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.DatabasePreciseShardingAlgorithm
-          range-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.DatabasePreciseRangeShardingAlgorithm
-          sharding-column: user_id
+      broadcast-tables: tenant_user
       tables:
         pay_parent:
           ## 实际数据库分库数量和分表数量

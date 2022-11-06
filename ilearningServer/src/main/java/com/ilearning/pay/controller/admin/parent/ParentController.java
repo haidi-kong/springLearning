@@ -100,16 +100,16 @@ public class ParentController {
 
     public CommonResult<PageResult<ParentRespVO>> getParentDetailPage(@Valid ParentPageReqVO pageVO) {
         // Hint分片策略必须要使用 HintManager工具类
-        HintManager hintManager = HintManager.getInstance();
-        hintManager.addDatabaseShardingValue("pay_parent", pageVO.getUserId());
-        hintManager.addTableShardingValue("pay_parent",pageVO.getUserId());
-        hintManager.addTableShardingValue("pay_parent_item",pageVO.getUserId());
+//        HintManager hintManager = HintManager.getInstance();
+//        hintManager.addDatabaseShardingValue("pay_parent", pageVO.getUserId());
+//        hintManager.addTableShardingValue("pay_parent",pageVO.getUserId());
+//        hintManager.addTableShardingValue("pay_parent_item",pageVO.getUserId());
 
         //在读写分离数据库中，Hint 可以强制读主库（主从复制是存在一定延时，但在业务场景中，可能更需要保证数据的实时性）
         //hintManager.setMasterRouteOnly();
 
         PageResult<ParentDO2> pageResult = parentService.getParentPageDetail(pageVO);
-        hintManager.close();
+//        hintManager.close();
         return success(ParentConvert.INSTANCE.convertPage2(pageResult));
     }
 

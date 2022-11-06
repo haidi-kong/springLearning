@@ -11,7 +11,7 @@
 学习分享内容
 * ilearningGenerateCode 基于velocity，读取表结构快速生成springboot开发全套代码，支持自定义模板，代码生成路径，快速开发
 * spring事务，引入事务的方式，1.xml切面 2.配置类 3.注解 4.手动事务 理论知识可参考 [博客](https://blog.csdn.net/qq_17236715/article/details/125591467?spm=1001.2014.3001.5501)
-* shardingSphere 分库分表实践
+* shardingSphere 分库分表实践 1.分库分表配置 2.分库分表不同路由算法(shardingjdbc 分支)[博客](https://blog.csdn.net/qq_17236715/article/details/127680981?spm=1001.2014.3001.5502) 3.分库分表多租户实践(shardingjdbc 分支)[博客](https://blog.csdn.net/qq_17236715/article/details/127717084?spm=1001.2014.3001.5502)
 
 
 事务传播和Mybatis事务实现。
