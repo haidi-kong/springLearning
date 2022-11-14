@@ -141,6 +141,17 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+        <!--canal-->
+        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.client</artifactId>
+        </dependency>
+
+        <!-- Message、CanalEntry.Entry等来自此安装包 -->
+        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.protocol</artifactId>
+        </dependency>
 
     </dependencies>
 
