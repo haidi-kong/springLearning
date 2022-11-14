@@ -45,6 +45,14 @@ public interface ParentService {
     ParentDO getParent(Long id);
 
     /**
+     * 获得
+     *
+     * @param id 编号
+     * @return
+     */
+    List<ParentDO2> getParent2(Long id, Long id2);
+
+    /**
      * 获得列表
      *
      * @param ids 编号

@@ -74,6 +74,11 @@ public class ParentServiceImpl implements ParentService {
     }
 
     @Override
+    public List<ParentDO2> getParent2(Long id1, Long id2) {
+        return parentMapper.selectByRangeId(id1, id2);
+    }
+
+    @Override
     public List<ParentDO> getParentList(Collection<Long> ids) {
         return parentMapper.selectBatchIds(ids);
     }

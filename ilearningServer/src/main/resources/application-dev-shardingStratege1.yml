@@ -31,10 +31,15 @@ spring:
         connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
         filters: stat,wall,log4j2
       names: demo0,demo1
-      baseName: demo
     sharding:
       binding-tables: pay_parent,pay_parent_item
-      broadcast-tables: tenant_user
+      broadcast-tables: t_address
+      default-database-strategy:
+        ## 实际数据库分库路由键和路由算法
+        standard:
+          precise-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.DatabasePreciseShardingAlgorithm
+          range-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.DatabasePreciseRangeShardingAlgorithm
+          sharding-column: user_id
       tables:
         pay_parent:
           ## 实际数据库分库数量和分表数量
@@ -48,12 +53,10 @@ spring:
             type: SNOWFLAKE
           table-strategy:
             ## 实际数据库分表路由键和路由算法
-            hint:
-              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyHintTableShardingAlgorithm
-          database-strategy:
-            ## 实际数据库分表路由键和路由算法
-            hint:
-              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyHintDatabaseShardingAlgorithm
+            complex:
+              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyComplexTableShardingAlgorithm
+              range-algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyPreciseTableRangeShardingAlgorithm
+              sharding-columns: user_id,update_time
         pay_parent_item:
           actual-data-nodes: demo$->{0..1}.pay_parent_item_$->{0..1}
           key-generator:
@@ -63,12 +66,10 @@ spring:
                 id: 123
             type: SNOWFLAKE
           table-strategy:
-            hint:
-              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyHintTableShardingAlgorithm
-          database-strategy:
-            ## 实际数据库分表路由键和路由算法
-            hint:
-              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyHintDatabaseShardingAlgorithm
+            standard:
+              algorithm-class-name: com.ilearning.common.datasource.shardingJdbc.MyComplexTableShardingAlgorithm
+              sharding-columns: user_id,update_time
+
   # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
   redis:
     host: 42.192.183.193 # 地址
@@ -77,9 +78,3 @@ spring:
 props:
   sql:
     show=true:
-
-canal:
-  serverAddress: 42.192.183.193
-  serverPort: 11111
-  instance: #多个instance
-    - example

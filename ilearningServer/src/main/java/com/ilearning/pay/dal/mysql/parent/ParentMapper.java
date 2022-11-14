@@ -36,4 +36,6 @@ public interface ParentMapper extends BaseMapperX<ParentDO> {
 
     List<ParentDO2> selectPageDetail(Page page, @Param("req") ParentPageReqVO reqVO);
 
+    List<ParentDO2> selectByRangeId(@Param("id1") Long id1, @Param("id2") Long id2);
+
 }
