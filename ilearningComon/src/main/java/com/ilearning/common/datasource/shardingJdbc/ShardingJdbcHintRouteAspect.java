@@ -65,7 +65,6 @@ public class ShardingJdbcHintRouteAspect {
      */
     @After("declearJoinPointExpression()")
     public void afterMethod(JoinPoint joinPoint) {
-        log.info("After---------------");
         HintManager.clear();
     }
 

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class JsonUtils {
 
     static {
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     /**
@@ -43,7 +45,13 @@ public class JsonUtils {
 
     @SneakyThrows
     public static String toJsonString(Object object) {
-        return objectMapper.writeValueAsString(object);
+        String parseRes = null;
+        try {
+            parseRes = objectMapper.writeValueAsString(object);
+        } catch (Exception e) {
+            log.error("parse object {} to json error {}", object,  e.getMessage());
+        }
+        return parseRes;
     }
 
     @SneakyThrows

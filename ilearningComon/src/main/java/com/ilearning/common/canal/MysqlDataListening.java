@@ -1,12 +1,16 @@
 package com.ilearning.common.canal;
 
+import com.ilearning.common.redis.RedisKeyDefine;
+import com.ilearning.common.redis.RedisKeyRegistry;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +24,7 @@ import com.alibaba.otter.canal.protocol.Message;
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 @Component
 @Slf4j
@@ -31,6 +36,9 @@ public class MysqlDataListening {
 
     @Autowired
     private CanalInstanceProperties canalInstanceProperties;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
 
     @PostConstruct
@@ -112,17 +120,19 @@ public class MysqlDataListening {
                         case UPDATE:
                             printColumn(rowData.getAfterColumnsList());
                             printColumn(rowData.getBeforeColumnsList());
+                            handleRedisCache(entry.getHeader().getTableName(), rowData.getAfterColumnsList());
                             break;
                         case INSERT:
                             printColumn(rowData.getAfterColumnsList());
+                            handleRedisCache(entry.getHeader().getTableName(), rowData.getAfterColumnsList());
                             break;
                         case DELETE:
                             printColumn(rowData.getBeforeColumnsList());
+                            handleRedisCache(entry.getHeader().getTableName(), rowData.getAfterColumnsList());
                             break;
                         default:
                     }
                 }
-
         }
     }
 
@@ -135,6 +145,22 @@ public class MysqlDataListening {
             sb.append("    ");
         }
         log.info(sb.toString());
+    }
+
+    private void handleRedisCache(String tableName, List<CanalEntry.Column> columns) {
+        // 分库分表，需要抽取表前缀
+        RedisKeyDefine redisKeyDefine = RedisKeyRegistry.getDefines().get(tableName.substring(0,tableName.length()-2));
+        if (redisKeyDefine != null) {
+            List<String> keyColumns = new ArrayList<>();
+            for (CanalEntry.Column column : columns) {
+                if (redisKeyDefine.getTableColumnList().contains(column.getName())) {
+                    keyColumns.add(column.getValue());
+                }
+            }
+            String key = String.format(redisKeyDefine.getKeyTemplate(), keyColumns.toArray());
+            log.info("delete cache, key is {}", key);
+            stringRedisTemplate.delete(key);
+        }
     }
 
 }
