@@ -12,9 +12,9 @@
 * ilearningGenerateCode 基于velocity，读取表结构快速生成springboot开发全套代码，支持自定义模板，代码生成路径，快速开发
 * spring事务，引入事务的方式，1.xml切面 2.配置类 3.注解 4.手动事务 理论知识可参考 [博客](https://blog.csdn.net/qq_17236715/article/details/125591467?spm=1001.2014.3001.5501)
 * shardingSphere 分库分表实践 1.分库分表配置 2.分库分表不同路由算法(shardingjdbc 分支)[博客](https://blog.csdn.net/qq_17236715/article/details/127680981?spm=1001.2014.3001.5502) 3.分库分表多租户实践(shardingjdbc 分支)[博客](https://blog.csdn.net/qq_17236715/article/details/127717084?spm=1001.2014.3001.5502)
+* canal 实践 1.canal docker部署 2.canal消费instance[博客](https://blog.csdn.net/qq_17236715/article/details/127680981?spm=1001.2014.3001.5502) 3.分库分表多租户实践(shardingjdbc 分支)[博客](https://blog.csdn.net/qq_17236715/article/details/127717084?spm=1001.2014.3001.5502)
+* canal+rabbimq 实现统一缓存管理和缓存一致性处理 1.方案设计 2.缓存统一管理 3.测试 [博客](https://blog.csdn.net/qq_17236715/article/details/128028366?spm=1001.2014.3001.5502)
 
-
-事务传播和Mybatis事务实现。
 
 
 | 项目名                | 说明                     | 用途                                                                                                                                 |
@@ -42,3 +42,5 @@
 | [MapStruct](https://mapstruct.org/)                                                         | Java Bean 转换     | 1.4.1    | [文档](http://www.iocoder.cn/Spring-Boot/MapStruct/?yudao)       |
 | [Lombok](https://projectlombok.org/)                                                        | 消除冗长的 Java 代码    | 1.16.14  | [文档](http://www.iocoder.cn/Spring-Boot/Lombok/?yudao)          |
 | [org.apache.shardingsphere](https://github.com/apache/shardingsphere)                       | 分库分表    | 4.0.0-RC1  | [文档](https://github.com/apache/shardingsphere)          |
+| [canal](https://github.com/alibaba/canal)                                                   | canal    | 1.5  | [文档](https://github.com/alibaba/canal)          |
+| [rabbitmq](https://github.com/rabbitmq/rabbitmq-server)                                     | rabbitmq    | xx  | [文档](https://github.com/rabbitmq/rabbitmq-server )          |

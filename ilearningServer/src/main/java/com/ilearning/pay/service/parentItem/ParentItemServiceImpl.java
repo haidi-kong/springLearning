@@ -1,5 +1,6 @@
 package com.ilearning.pay.service.parentItem;
 
+import com.ilearning.pay.dal.redis.parentItem.ParentItemRedisDao;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
@@ -27,6 +28,9 @@ public class ParentItemServiceImpl implements ParentItemService {
     @Resource
     private ParentItemMapper parentItemMapper;
 
+    @Resource
+    private ParentItemRedisDao parentItemRedisDao;
+
     @Override
     public Long createParentItem(ParentItemCreateReqVO createReqVO) {
         // 插入
@@ -43,6 +47,7 @@ public class ParentItemServiceImpl implements ParentItemService {
         // 更新
         ParentItemDO updateObj = ParentItemConvert.INSTANCE.convert(updateReqVO);
         parentItemMapper.updateById(updateObj);
+        parentItemRedisDao.delete(updateObj);
     }
 
     @Override
@@ -61,12 +66,26 @@ public class ParentItemServiceImpl implements ParentItemService {
 
     @Override
     public ParentItemDO getParentItem(Long id) {
-        return parentItemMapper.selectById(id);
+        ParentItemDO parentItemDOCache = parentItemRedisDao.getById(id);
+        if (parentItemDOCache != null) {
+            return parentItemDOCache;
+        };
+        ParentItemDO parentItemDO = parentItemMapper.selectById(id);
+        parentItemRedisDao.set(parentItemDO);
+        return parentItemDO;
     }
 
     @Override
     public List<ParentItemDO> getParentItemList(Collection<Long> ids) {
-        return parentItemMapper.selectBatchIds(ids);
+        List<ParentItemDO> parentItemDOCacheList = parentItemRedisDao.getByIdList(ids);
+        if (parentItemDOCacheList != null && parentItemDOCacheList.size() == ids.size()) {
+            return parentItemDOCacheList;
+        }
+        List<ParentItemDO> parentItemDOList = parentItemMapper.selectBatchIds(ids);
+        for (ParentItemDO parentItemDO : parentItemDOList) {
+            parentItemRedisDao.set(parentItemDO);
+        }
+        return parentItemDOList;
     }
 
     @Override
